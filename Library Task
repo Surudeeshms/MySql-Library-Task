@@ -1,0 +1,103 @@
+create database lib;
+use lib;
+
+
+create table category(
+    id int not null primary key,
+    name varchar(255)
+);
+
+
+create table book(
+    id int not null,
+    title varchar(255),
+    category_id int not null,
+    primary key(id, category_id),
+    foreign key(category_id) references category(id)
+);
+
+
+create table author(
+    id int not null primary key,
+    name varchar(255)
+);
+
+
+create table book_author(
+		book_id int not null,
+		author_id int not null,
+		primary key(book_id, author_id),
+		foreign key(book_id) references book(id),
+		foreign key(author_id) references author(id)
+);
+
+
+create table publisher(
+    id int not null primary key,name varchar(255)
+);
+
+-- Table for book_copy
+create table book_copy(
+    id int not null,year_published int,
+    book_id int,
+    publisher_id int,
+    primary key(id, book_id, publisher_id),foreign key(book_id) references book(id),
+    foreign key(publisher_id) references publisher(id)
+);
+
+
+create table patron_account(
+    card_number char(10) not null primary key,first_name varchar(255),
+    surname varchar(255),email varchar(255),
+    status varchar(10)
+);
+
+
+create table checkout(
+    id int not null primary key,start_time int,
+    end_time int,
+    book_copy_id int not null,
+    patron_account_id int not null,
+    is_returned boolean,foreign key(book_copy_id) references book_copy(id),
+    foreign key(patron_account_id) references patron_account(card_number)
+);
+
+
+create table hold(
+    id int not null primary key,start_time int,
+    end_time int,
+    book_copy_id int not null,
+    patron_account_id char(10) not null,
+    foreign key(book_copy_id) references book_copy(id),
+    foreign key(patron_account_id) references patron_account(card_number)
+);
+
+
+create table waitlist(
+    patron_id char(20) not null,book_id int not null,
+    primary key(patron_id, book_id),
+    foreign key(patron_id) references patron_account(card_number),
+    foreign key(book_id) references book(id)
+);
+
+
+create table notification(
+    id int not null primary key,
+    sent_at int,
+    type varchar(20),
+    patron_account_id char(10) not null,
+    foreign key(patron_account_id) references patron_account(card_number)
+);
+
+SELECT * FROM category;
+SELECT * FROM book;
+SELECT * FROM author;
+SELECT * FROM book_author;
+SELECT * FROM publisher;
+SELECT * FROM book_copy;
+SELECT * FROM patron_account;
+SELECT * FROM checkout;
+SELECT * FROM hold;
+SELECT * FROM waitlist;
+SELECT * FROM notification;
+
